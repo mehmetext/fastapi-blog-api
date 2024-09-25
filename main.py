@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Query
 from enum import Enum
 from pydantic import BaseModel
 
@@ -79,12 +79,12 @@ fake_items = [
 ]
 
 
-@app.get("/items")
+@app.get("/items-old")
 async def get_items(skip: int = 0, limit: int = 10):
     return fake_items[skip : skip + limit]
 
 
-@app.get("/items/{item_id}")
+@app.get("/items-old/{item_id}")
 async def get_item(item_id: int, q: str | None = None, short: bool = False):
     item = {"item_id": item_id}
     if q:
@@ -142,3 +142,42 @@ async def create_item(item: Item):
 async def create_item_with_put(item_id: int, item: Item):
     result = {"item_id": item_id, **item.model_dump()}
     return result
+
+
+@app.get("/items")
+async def read_items(
+    q: str = Query(
+        "asd",
+        min_length=3,
+        max_length=10,
+    ),
+    str_list: list[str] | None = Query(
+        None,
+        min_length=3,
+        max_length=10,
+        title="String List",
+        description="Description for String List",
+    ),
+):
+    results = {
+        "items": [
+            {"item_id": "Foo"},
+            {"item_id": "Bar"},
+        ],
+        "q": q,
+    }
+
+    if str_list:
+        results.update({"str_list": str_list})
+
+    return results
+
+
+@app.get("/items/hidden")
+async def hidden_query_route(
+    hidden_query: str | None = Query(None, include_in_schema=False),
+):
+    if hidden_query:
+        return {"hidden_query": hidden_query}
+
+    return {"hidden_query": "Not found"}
