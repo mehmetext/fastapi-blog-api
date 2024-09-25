@@ -1,3 +1,4 @@
+import random
 from fastapi import FastAPI, Path, Query
 from enum import Enum
 from pydantic import BaseModel
@@ -190,7 +191,13 @@ async def read_items_validation(
     q: str,
     size: float = Query(..., ge=0, le=10.5),
 ):
-    results = {"item_id": item_id}
+    results = {
+        "item_id": item_id,
+        "size": size,
+        "random": random.randint(0, 100),
+        "random_float": random.randint(0, 100) / 100,
+    }
+
     if q:
         results.update({"q": q})
 
