@@ -1,11 +1,11 @@
 import random
-from fastapi import FastAPI, Path, Query
+from fastapi import Body, FastAPI, Path, Query
 from enum import Enum
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 app = FastAPI()
 
-
+""" 
 @app.get("/")
 async def root():
     return {"message": "Hello World from GET method"}
@@ -200,5 +200,38 @@ async def read_items_validation(
 
     if q:
         results.update({"q": q})
+
+    return results
+ """
+
+
+class Item(BaseModel):
+    name: str
+    description: str = Field(..., min_length=10)
+    price: float
+    tax: float | None = None
+
+
+class User(BaseModel):
+    username: str
+    full_name: str | None = None
+
+
+@app.put("/items/{item_id}")
+async def update_item(
+    *,
+    item_id: int = Path(..., ge=0, le=150),
+    q: str | None = None,
+    item: Item | None = None,
+    user: User | None = None,
+    importance: int = Body(...),
+):
+    results = {
+        "item_id": item_id,
+        "q": q,
+        "item": item,
+        "user": user,
+        "importance": importance,
+    }
 
     return results
