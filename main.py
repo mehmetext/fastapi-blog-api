@@ -1,85 +1,26 @@
 from fastapi import FastAPI
 from enum import Enum
+from pydantic import BaseModel
 
 app = FastAPI()
 
 
-@app.get(
-    "/",
-    tags=["Root"],
-    responses={
-        200: {
-            "description": "Root",
-            "content": {
-                "application/json": {
-                    "example": {"message": "Hello World from GET method"}
-                }
-            },
-        }
-    },
-    status_code=200,
-    deprecated=False,
-)
+@app.get("/")
 async def root():
     return {"message": "Hello World from GET method"}
 
 
-@app.post(
-    "/",
-    tags=["Root"],
-    responses={
-        200: {
-            "description": "Root",
-            "content": {
-                "application/json": {
-                    "example": {"message": "Hello World from POST method"}
-                }
-            },
-        }
-    },
-    status_code=200,
-    deprecated=False,
-)
+@app.post("/")
 async def post():
     return {"message": "Hello World from POST method"}
 
 
-@app.put(
-    "/{id}",
-    tags=["Root"],
-    responses={
-        200: {
-            "description": "Root",
-            "content": {
-                "application/json": {
-                    "example": {"message": "Hello World from PUT method"}
-                }
-            },
-        }
-    },
-    status_code=200,
-    deprecated=False,
-)
+@app.put("/{id}")
 async def put():
     return {"message": "Hello World from PUT method"}
 
 
-@app.delete(
-    "/{id}",
-    tags=["Root"],
-    responses={
-        200: {
-            "description": "Root",
-            "content": {
-                "application/json": {
-                    "example": {"message": "Hello World from DELETE method"}
-                }
-            },
-        }
-    },
-    status_code=200,
-    deprecated=False,
-)
+@app.delete("/{id}")
 async def delete():
     return {"message": "Hello World from DELETE method"}
 
@@ -177,3 +118,27 @@ async def get_user_item(
             {"description": "This is an amazing item that has a long description"}
         )
     return item
+
+
+class Item(BaseModel):
+    name: str
+    description: str | None = None
+    price: float
+    tax: float | None = None
+
+
+@app.post("/items")
+async def create_item(item: Item):
+    item_dict = item.model_dump()
+
+    if item.tax:
+        price_with_tax = item.price + item.tax
+        item_dict.update({"price_with_tax": price_with_tax})
+
+    return item_dict
+
+
+@app.put("/items/{item_id}")
+async def create_item_with_put(item_id: int, item: Item):
+    result = {"item_id": item_id, **item.model_dump()}
+    return result
