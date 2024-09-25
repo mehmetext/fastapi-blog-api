@@ -113,3 +113,67 @@ async def get_food(food_name: FoodEnum):
         return {"message": "Vegetables are good for health"}
     if food_name == FoodEnum.dairy:
         return {"message": "Dairy products are good for health"}
+
+
+fake_items = [
+    {"item_name": "Tomato", "item_id": 1},
+    {"item_name": "Potato", "item_id": 2},
+    {"item_name": "Carrot", "item_id": 3},
+    {"item_name": "Cabbage", "item_id": 4},
+    {"item_name": "Cauliflower", "item_id": 5},
+    {"item_name": "Cabbage", "item_id": 6},
+    {"item_name": "Cauliflower", "item_id": 7},
+    {"item_name": "Cabbage", "item_id": 8},
+    {"item_name": "Cauliflower", "item_id": 9},
+    {"item_name": "Cabbage", "item_id": 10},
+    {"item_name": "Cauliflower", "item_id": 11},
+    {"item_name": "Cabbage", "item_id": 12},
+    {"item_name": "Cauliflower", "item_id": 13},
+    {"item_name": "Cabbage", "item_id": 14},
+    {"item_name": "Cauliflower", "item_id": 15},
+    {"item_name": "Cabbage", "item_id": 16},
+    {"item_name": "Cauliflower", "item_id": 17},
+    {"item_name": "Cabbage", "item_id": 18},
+    {"item_name": "Cauliflower", "item_id": 19},
+]
+
+
+@app.get("/items")
+async def get_items(skip: int = 0, limit: int = 10):
+    return fake_items[skip : skip + limit]
+
+
+@app.get("/items/{item_id}")
+async def get_item(item_id: int, q: str | None = None, short: bool = False):
+    item = {"item_id": item_id}
+    if q:
+        item.update({"q": q})
+
+    if not short:
+        item.update(
+            {"description": "This is an amazing item that has a long description"}
+        )
+
+    return item
+
+
+@app.get("/users/{user_id}/items/{item_id}")
+async def get_user_item(
+    user_id: int,
+    item_id: int,
+    sample_query: str,
+    q: str | None = None,
+    short: bool = False,
+):
+    item = {
+        "item_id": item_id,
+        "owner_id": user_id,
+        "sample_query": sample_query,
+    }
+    if q:
+        item.update({"q": q})
+    if not short:
+        item.update(
+            {"description": "This is an amazing item that has a long description"}
+        )
+    return item
