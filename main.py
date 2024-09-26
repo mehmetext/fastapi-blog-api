@@ -1,7 +1,9 @@
 import random
+from typing import List
+import re
 from fastapi import Body, FastAPI, Path, Query
 from enum import Enum
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, HttpUrl
 
 app = FastAPI()
 
@@ -205,7 +207,7 @@ async def read_items_validation(
  """
 
 
-class Item(BaseModel):
+""" class Item(BaseModel):
     name: str
     description: str = Field(..., min_length=10)
     price: float
@@ -234,4 +236,30 @@ async def update_item(
         "importance": importance,
     }
 
+    return results
+ """
+
+
+class Image(BaseModel):
+    url: HttpUrl = Field(..., example="https://example.com/foo.jpg")
+    name: str = Field(..., example="A name")
+
+
+class Item(BaseModel):
+    name: str = Field(..., example="Foo")
+    description: str | None = Field(None, example="A very nice item")
+    price: float = Field(..., example=10.5)
+    tax: float | None = Field(None, example=1.5)
+    tags: List[str] | None = Field(None, example=["awesome", "nice"])
+    images: List[Image] | None = Field(
+        None,
+        example=[
+            {"url": "https://example.com/foo.jpg", "name": "A very nice item"},
+        ],
+    )
+
+
+@app.put("/item/{item_id}")
+async def update_item(item_id: int, item: Item = Body(embed=True)):
+    results = {"item_id": item_id, **item.model_dump()}
     return results
