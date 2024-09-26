@@ -5,7 +5,7 @@ import re
 from uuid import UUID
 from fastapi import Body, FastAPI, Path, Query
 from enum import Enum
-from pydantic import BaseModel, Field, HttpUrl
+from pydantic import BaseModel, EmailStr, Field, HttpUrl
 
 app = FastAPI()
 
@@ -267,7 +267,7 @@ async def update_item(item_id: int, item: Item = Body(embed=True)):
     return results """
 
 
-@app.put("/extra-data-types")
+""" @app.put("/extra-data-types")
 async def extra_data_types(
     item_id: UUID = Body(...),
     start_date: datetime = Body(...),
@@ -285,3 +285,36 @@ async def extra_data_types(
         "process_after": process_after,
         "duration": duration,
     }
+ """
+
+
+class User(BaseModel):
+    id: UUID
+    name: str
+    age: int
+    password: str
+    email: EmailStr
+
+
+@app.get(
+    "/users",
+    response_model=list[User],
+)
+async def get_users():
+    users = [
+        User(
+            id=UUID("123e4567-e89b-12d3-a456-426614174000"),
+            name="John Doe",
+            age=25,
+            password="123456",
+            email="john.doe@example.com",
+        ),
+        User(
+            id=UUID("123e4567-e89b-12d3-a456-426614174000"),
+            name="John Doe",
+            age=25,
+            password="123456",
+            email="john.doe@example.com",
+        ),
+    ]
+    return users
