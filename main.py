@@ -1,6 +1,8 @@
+from datetime import datetime, time, timedelta
 import random
 from typing import List
 import re
+from uuid import UUID
 from fastapi import Body, FastAPI, Path, Query
 from enum import Enum
 from pydantic import BaseModel, Field, HttpUrl
@@ -240,7 +242,7 @@ async def update_item(
  """
 
 
-class Image(BaseModel):
+""" class Image(BaseModel):
     url: HttpUrl = Field(..., example="https://example.com/foo.jpg")
     name: str = Field(..., example="A name")
 
@@ -262,4 +264,24 @@ class Item(BaseModel):
 @app.put("/item/{item_id}")
 async def update_item(item_id: int, item: Item = Body(embed=True)):
     results = {"item_id": item_id, **item.model_dump()}
-    return results
+    return results """
+
+
+@app.put("/extra-data-types")
+async def extra_data_types(
+    item_id: UUID = Body(...),
+    start_date: datetime = Body(...),
+    end_date: datetime = Body(...),
+    repeat_at: time = Body(...),
+    process_after: timedelta = Body(...),
+):
+    duration = end_date - start_date
+    print(duration)
+    return {
+        "item_id": item_id,
+        "start_date": start_date,
+        "end_date": end_date,
+        "repeat_at": repeat_at,
+        "process_after": process_after,
+        "duration": duration,
+    }
