@@ -3,7 +3,7 @@ import random
 from typing import List
 import re
 from uuid import UUID
-from fastapi import Body, FastAPI, Path, Query
+from fastapi import Body, FastAPI, Form, Path, Query
 from enum import Enum
 from pydantic import BaseModel, EmailStr, Field, HttpUrl
 
@@ -321,7 +321,7 @@ async def get_users():
  """
 
 
-@app.post("/users", status_code=201)
+""" @app.post("/users", status_code=201)
 async def create_item(name: str):
     return {"name": name}
 
@@ -334,3 +334,12 @@ async def delete_user(id: int):
 @app.get("/users/{id}", status_code=301)
 async def read_user_redirect():
     return {"hello": "world"}
+ """
+
+
+""" @app.post("/login")
+async def login(username: str = Form(...), password: str = Form(...)):
+    return {
+        "username": username,
+    }
+ """
