@@ -3,7 +3,8 @@ import random
 from typing import List
 import re
 from uuid import UUID
-from fastapi import Body, FastAPI, Form, Path, Query
+import uuid
+from fastapi import Body, FastAPI, Form, HTTPException, Path, Query
 from enum import Enum
 from pydantic import BaseModel, EmailStr, Field, HttpUrl
 
@@ -343,3 +344,80 @@ async def login(username: str = Form(...), password: str = Form(...)):
         "username": username,
     }
  """
+
+
+# A basic todo app
+
+
+class Todo(BaseModel):
+    id: UUID = Field(default_factory=uuid.uuid4)
+    title: str = Field(..., min_length=3, max_length=50)
+    description: str = Field(..., min_length=0)
+    done: bool = Field(default=False)
+
+
+todos = [
+    Todo(
+        id=UUID("123e4567-e89b-12d3-a456-426614174000"),
+        title="Buy groceries",
+        description="Buy groceries",
+    ),
+    Todo(
+        id=UUID("223e4567-e89b-12d3-a456-426614174001"),
+        title="Do laundry",
+        description="Wash, dry, and fold clothes",
+    ),
+]
+
+
+@app.get("/todos", response_model=list[Todo])
+async def get_todos():
+    return todos
+
+
+@app.post("/todos", status_code=201, response_model=Todo)
+async def create_todo(
+    title: str = Body(..., min_length=3, max_length=50),
+    description: str = Body(..., min_length=0),
+):
+    todo = Todo(title=title, description=description)
+    todos.append(todo)
+    return todo
+
+
+@app.get("/todos/{id}", response_model=Todo)
+async def get_todo(id: UUID):
+    todo = next((todo for todo in todos if todo.id == id), None)
+    if todo is None:
+        raise HTTPException(status_code=404, detail="Todo not found")
+    return todo
+
+
+@app.put("/todos/{id}", response_model=Todo)
+async def update_todo(
+    id: UUID = Path(...),
+    title: str | None = Body(None, min_length=3, max_length=50),
+    description: str | None = Body(None, min_length=0),
+    done: bool | None = Body(None),
+):
+    todo = next((todo for todo in todos if todo.id == id), None)
+    if todo is None:
+        raise HTTPException(status_code=404, detail="Todo not found")
+
+    if title is not None:
+        todo.title = title
+    if description is not None:
+        todo.description = description
+    if done is not None:
+        todo.done = done
+
+    return todo
+
+
+@app.delete("/todos/{id}", status_code=200)
+async def delete_todo(id: UUID):
+    todo = next((todo for todo in todos if todo.id == id), None)
+    if todo is None:
+        raise HTTPException(status_code=404, detail="Todo not found")
+    todos.remove(todo)
+    return {"id": id, "message": "Todo deleted"}
