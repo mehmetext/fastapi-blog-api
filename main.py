@@ -288,7 +288,7 @@ async def extra_data_types(
  """
 
 
-class User(BaseModel):
+""" class User(BaseModel):
     id: UUID
     name: str
     age: int
@@ -318,3 +318,19 @@ async def get_users():
         ),
     ]
     return users
+ """
+
+
+@app.post("/users", status_code=201)
+async def create_item(name: str):
+    return {"name": name}
+
+
+@app.delete("/users/{id}", status_code=204)
+async def delete_user(id: int):
+    return {"id": id}
+
+
+@app.get("/users/{id}", status_code=301)
+async def read_user_redirect():
+    return {"hello": "world"}
