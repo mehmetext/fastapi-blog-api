@@ -1,6 +1,7 @@
 from datetime import UTC, datetime
+import uuid
 from pydantic import BaseModel
-from sqlalchemy import Column, DateTime, Integer, String
+from sqlalchemy import UUID, Column, DateTime, Integer, String
 
 from app.models import Base
 
@@ -8,7 +9,7 @@ from app.models import Base
 class Post(Base):
     __tablename__ = "posts"
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     author_id = Column(Integer, nullable=False)
 
     title = Column(String, nullable=False)
