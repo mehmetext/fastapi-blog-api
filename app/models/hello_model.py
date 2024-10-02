@@ -1,5 +1,5 @@
 from pydantic import BaseModel
 
 
-class Hello(BaseModel):
+class HelloModel(BaseModel):
     message: str
