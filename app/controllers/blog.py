@@ -36,3 +36,7 @@ class BlogController:
             posts = sorted(posts, key=lambda x: getattr(x, order_by.value))
 
         return posts
+
+    def get_post(id: int) -> Post:
+        post = next((post for post in example_posts if post.id == id), None)
+        return post

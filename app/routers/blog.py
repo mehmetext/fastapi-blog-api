@@ -12,3 +12,8 @@ async def get_all_posts(
     order_by: OrderBy | None = None,
 ):
     return BlogController.get_all_posts(q, author_id, order_by)
+
+
+@router.get("/{id}", response_model=Post)
+async def get_post(id: int):
+    return BlogController.get_post(id)
