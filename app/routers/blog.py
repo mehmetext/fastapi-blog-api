@@ -1,11 +1,11 @@
 from fastapi import APIRouter, Query
 from app.controllers.blog import BlogController, OrderBy
-from app.models.post import Post
+from app.models.post import PostRead
 
 router = APIRouter(prefix="/blog", tags=["Blog"])
 
 
-@router.get("/", response_model=list[Post])
+@router.get("/", response_model=list[PostRead])
 async def get_all_posts(
     q: str | None = Query(None, min_length=3),
     author_id: int | None = None,
@@ -14,6 +14,6 @@ async def get_all_posts(
     return BlogController.get_all_posts(q, author_id, order_by)
 
 
-@router.get("/{id}", response_model=Post)
+@router.get("/{id}", response_model=PostRead)
 async def get_post(id: int):
     return BlogController.get_post(id)

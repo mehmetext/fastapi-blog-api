@@ -1,6 +1,6 @@
 from enum import Enum
 from app.lib.data.posts import example_posts
-from app.models.post import Post
+from app.models.post import PostRead
 
 
 class OrderBy(str, Enum):
@@ -15,7 +15,7 @@ class BlogController:
         q: str | None = None,
         author_id: int | None = None,
         order_by: OrderBy | None = None,
-    ) -> list[Post]:
+    ) -> list[PostRead]:
         posts = example_posts
 
         if q:
@@ -37,6 +37,6 @@ class BlogController:
 
         return posts
 
-    def get_post(id: int) -> Post:
+    def get_post(id: int) -> PostRead:
         post = next((post for post in example_posts if post.id == id), None)
         return post
