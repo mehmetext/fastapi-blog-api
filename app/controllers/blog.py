@@ -1,7 +1,6 @@
 from enum import Enum
 from fastapi import HTTPException
 from sqlalchemy import select
-from app.lib.data.posts import example_posts
 from app.models.post import Post, PostRead
 from sqlalchemy.ext.asyncio import AsyncSession
 
