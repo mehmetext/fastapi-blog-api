@@ -3,3 +3,6 @@ uvicorn[standard]
 pydantic[email]
 python-multipart
 python-dotenv
+SQLAlchemy
+asyncpg
+alembic
