@@ -18,7 +18,7 @@ async def lifespan(app: FastAPI):
     # Shutdown: Gerekirse kapatma işlemleri burada yapılabilir
 
 
-app = FastAPI(title=env.APP_NAME)
+app = FastAPI(title=env.APP_NAME, lifespan=lifespan)
 
 
 app.include_router(hello_router.router)

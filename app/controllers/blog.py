@@ -1,6 +1,8 @@
 from enum import Enum
+from sqlalchemy import select
 from app.lib.data.posts import example_posts
-from app.models.post import PostRead
+from app.models.post import Post, PostRead
+from sqlalchemy.ext.asyncio import AsyncSession
 
 
 class OrderBy(str, Enum):
@@ -11,32 +13,36 @@ class OrderBy(str, Enum):
 
 
 class BlogController:
-    def get_all_posts(
+    async def get_all_posts(
+        db: AsyncSession,
         q: str | None = None,
         author_id: int | None = None,
         order_by: OrderBy | None = None,
     ) -> list[PostRead]:
-        posts = example_posts
+        query = select(Post)
 
         if q:
             print(f"q: {q}")
-            posts = [
-                post
-                for post in posts
-                if q.lower() in post.title.lower() or q.lower() in post.content.lower()
-            ]
+            query = query.where(
+                Post.title.ilike(f"%{q}%") | Post.content.ilike(f"%{q}%")
+            )
+
         if author_id:
             print(f"author_id: {author_id}")
-            posts = [post for post in posts if post.author_id == author_id]
-
-        print(f"Found posts count: {len(posts)}")
+            query = query.where(Post.author_id == author_id)
 
         if order_by:
             print(f"order_by: {order_by}")
-            posts = sorted(posts, key=lambda x: getattr(x, order_by.value))
+            query = query.order_by(getattr(Post, order_by.value))
+
+        result = await db.execute(query)
+
+        posts = result.scalars().all()
+
+        print(f"Posts count: {len(posts)}")
 
         return posts
 
-    def get_post(id: int) -> PostRead:
+    async def get_post(id: int) -> PostRead:
         post = next((post for post in example_posts if post.id == id), None)
         return post
