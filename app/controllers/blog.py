@@ -1,4 +1,5 @@
 from enum import Enum
+from fastapi import HTTPException
 from sqlalchemy import select
 from app.lib.data.posts import example_posts
 from app.models.post import Post, PostRead
@@ -56,6 +57,11 @@ class BlogController:
 
         return posts
 
-    async def get_post(id: int) -> PostRead:
-        post = next((post for post in example_posts if post.id == id), None)
+    async def get_post(db: AsyncSession, id: int) -> PostRead:
+        result = await db.execute(select(Post).where(Post.id == id))
+        post = result.scalar()
+
+        if not post:
+            raise HTTPException(status_code=404, detail="Post not found")
+
         return post

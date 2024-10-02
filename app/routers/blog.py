@@ -18,5 +18,5 @@ async def get_all_posts(
 
 
 @router.get("/{id}", response_model=PostRead)
-async def get_post(id: int):
-    return BlogController.get_post(id)
+async def get_post(id: int, db: AsyncSession = Depends(get_db)):
+    return await BlogController.get_post(db, id)
