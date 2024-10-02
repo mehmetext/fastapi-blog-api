@@ -2,8 +2,7 @@ from fastapi import APIRouter
 
 from app.models.hello import Hello
 
-
-router = APIRouter(prefix="/hello")
+router = APIRouter(prefix="/hello", tags=["Hello"])
 
 
 @router.get("/", response_model=Hello)
