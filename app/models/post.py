@@ -1,6 +1,6 @@
-from datetime import datetime
+from datetime import UTC, datetime
 from pydantic import BaseModel
-from sqlalchemy import Column, DateTime, ForeignKey, Integer, String
+from sqlalchemy import Column, DateTime, Integer, String
 
 from app.models import Base
 
@@ -9,11 +9,18 @@ class Post(Base):
     __tablename__ = "posts"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
+    author_id = Column(Integer, nullable=False)
+
     title = Column(String, nullable=False)
     content = Column(String, nullable=False)
-    author_id = Column(Integer, nullable=False)
-    created_at = Column(DateTime, nullable=False)
-    updated_at = Column(DateTime, nullable=False)
+
+    created_at = Column(DateTime, nullable=False, default=datetime.now(UTC))
+    updated_at = Column(
+        DateTime,
+        nullable=False,
+        default=datetime.now(UTC),
+        onupdate=datetime.now(UTC),
+    )
 
 
 class PostBase(BaseModel):
