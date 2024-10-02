@@ -6,10 +6,14 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 
 class OrderBy(str, Enum):
-    title = "title"
-    content = "content"
-    created_at = "created_at"
-    updated_at = "updated_at"
+    title_asc = "title_asc"
+    title_desc = "title_desc"
+    content_asc = "content_asc"
+    content_desc = "content_desc"
+    created_at_asc = "created_at_asc"
+    created_at_desc = "created_at_desc"
+    updated_at_asc = "updated_at_asc"
+    updated_at_desc = "updated_at_desc"
 
 
 class BlogController:
@@ -33,7 +37,16 @@ class BlogController:
 
         if order_by:
             print(f"order_by: {order_by}")
-            query = query.order_by(getattr(Post, order_by.value))
+            if order_by == OrderBy.title_asc:
+                query = query.order_by(Post.title.asc())
+            elif order_by == OrderBy.title_desc:
+                query = query.order_by(Post.title.desc())
+            elif order_by == OrderBy.content_asc:
+                query = query.order_by(Post.content.asc())
+            elif order_by == OrderBy.content_desc:
+                query = query.order_by(Post.content.desc())
+            elif order_by == OrderBy.created_at_asc:
+                query = query.order_by(Post.created_at.asc())
 
         result = await db.execute(query)
 
