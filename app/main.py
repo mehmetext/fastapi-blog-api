@@ -1,7 +1,11 @@
 from fastapi import FastAPI
+from app.lib import env
 from app.routers import blog, hello_router
+from dotenv import load_dotenv
 
-app = FastAPI(title="FastAPI Öğreniyorum")
+load_dotenv()
+
+app = FastAPI(title=env.APP_NAME)
 
 app.include_router(hello_router.router)
 app.include_router(blog.router)

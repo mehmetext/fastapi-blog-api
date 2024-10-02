@@ -1,5 +1,5 @@
 from enum import Enum
-from app.data.posts import example_posts
+from app.lib.data.posts import example_posts
 from app.models.post import Post
 
 
