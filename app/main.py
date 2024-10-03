@@ -11,11 +11,9 @@ load_dotenv()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Startup: Veritabanı tablolarını oluştur
     async with db.engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
     yield
-    # Shutdown: Gerekirse kapatma işlemleri burada yapılabilir
 
 
 app = FastAPI(title=env.APP_NAME, lifespan=lifespan)
