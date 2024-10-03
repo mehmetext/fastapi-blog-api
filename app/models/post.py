@@ -1,5 +1,5 @@
 from datetime import UTC, datetime
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from sqlalchemy import UUID, Column, DateTime, Integer, String, func
 import uuid
 
@@ -27,9 +27,9 @@ class Post(Base):
 
 
 class PostBase(BaseModel):
-    title: str
-    content: str
-    author_id: int
+    title: str = Field(..., min_length=3, max_length=255)
+    content: str = Field(..., min_length=3)
+    author_id: int = Field(..., gt=0)
 
 
 class PostCreate(PostBase):
