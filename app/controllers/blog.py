@@ -2,7 +2,7 @@ from enum import Enum
 import uuid
 from fastapi import HTTPException
 from sqlalchemy import select
-from app.models.post import Post, PostRead
+from app.models.post import Post, PostCreate, PostRead
 from sqlalchemy.ext.asyncio import AsyncSession
 
 
@@ -65,3 +65,10 @@ class BlogController:
             raise HTTPException(status_code=404, detail="Post not found")
 
         return post
+
+    async def create_post(db: AsyncSession, post: PostCreate) -> PostRead:
+        new_post = Post(**post.model_dump())
+        db.add(new_post)
+        await db.commit()
+        await db.refresh(new_post)
+        return new_post

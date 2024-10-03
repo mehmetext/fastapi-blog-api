@@ -2,7 +2,7 @@ import uuid
 from fastapi import APIRouter, Depends, Path, Query
 from app.controllers.blog import BlogController, OrderBy
 from app.lib.db import get_db
-from app.models.post import PostRead
+from app.models.post import PostCreate, PostRead
 from sqlalchemy.ext.asyncio import AsyncSession
 
 router = APIRouter(prefix="/blog", tags=["Blog"])
@@ -49,3 +49,16 @@ async def get_post(
     db: AsyncSession = Depends(get_db),
 ):
     return await BlogController.get_post(db, id)
+
+
+@router.post(
+    "/",
+    response_model=PostRead,
+    summary="Create a new blog post",
+    description="Create and return a new blog post",
+)
+async def create_post(
+    post: PostCreate,
+    db: AsyncSession = Depends(get_db),
+):
+    return await BlogController.create_post(db, post)
