@@ -2,7 +2,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from app.lib import env
 from app.models import Base
-from app.routers import blog, hello_router
+from app.routers import blog
 from dotenv import load_dotenv
 from app.lib import db
 
@@ -21,7 +21,6 @@ async def lifespan(app: FastAPI):
 app = FastAPI(title=env.APP_NAME, lifespan=lifespan)
 
 
-app.include_router(hello_router.router)
 app.include_router(blog.router)
 
 
