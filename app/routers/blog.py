@@ -2,10 +2,21 @@ import uuid
 from fastapi import APIRouter, Depends, Path, Query
 from app.controllers.blog import BlogController, OrderBy
 from app.lib.db import get_db
+from app.lib.seed import seed_posts
 from app.models.post import PostCreate, PostRead, PostUpdate
 from sqlalchemy.ext.asyncio import AsyncSession
 
 router = APIRouter(prefix="/blog", tags=["Blog"])
+
+
+@router.get(
+    "/seed",
+    summary="Seed the database with posts",
+    description="Seed the database with sample blog posts for testing and development purposes",
+)
+async def seed(db: AsyncSession = Depends(get_db)):
+    await seed_posts(db)
+    return {"message": "Posts seeded"}
 
 
 @router.get(
