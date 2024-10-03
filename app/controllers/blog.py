@@ -1,4 +1,5 @@
 from enum import Enum
+import uuid
 from fastapi import HTTPException
 from sqlalchemy import select
 from app.models.post import Post, PostRead
@@ -56,7 +57,7 @@ class BlogController:
 
         return posts
 
-    async def get_post(db: AsyncSession, id: int) -> PostRead:
+    async def get_post(db: AsyncSession, id: uuid.UUID) -> PostRead:
         result = await db.execute(select(Post).where(Post.id == id))
         post = result.scalar()
 

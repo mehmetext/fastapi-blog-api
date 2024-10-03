@@ -1,3 +1,4 @@
+import uuid
 from fastapi import APIRouter, Depends, Query
 from app.controllers.blog import BlogController, OrderBy
 from app.lib.db import get_db
@@ -18,5 +19,5 @@ async def get_all_posts(
 
 
 @router.get("/{id}", response_model=PostRead)
-async def get_post(id: int, db: AsyncSession = Depends(get_db)):
+async def get_post(id: uuid.UUID, db: AsyncSession = Depends(get_db)):
     return await BlogController.get_post(db, id)
