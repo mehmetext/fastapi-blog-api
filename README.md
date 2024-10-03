@@ -1,4 +1,4 @@
-# FastAPI Project
+# FastAPI Blog API Project
 
 This project is a web application built using FastAPI, a modern, fast (high-performance) web framework for building APIs with Python 3.6+ based on standard Python type hints.
 
@@ -20,14 +20,14 @@ uvicorn[standard]
 1. Clone the repository:
 
    ```
-   git clone https://github.com/mehmetext/fastapi-tutorial.git
-   cd fastapi-tutorial
+   git clone https://github.com/mehmetext/fastapi-blog-api.git
+   cd fastapi-blog-api
    ```
 
 2. Create and activate a virtual environment:
 
    ```
-   python -m venv .venv
+   python3 -m venv .venv
    source .venv/bin/activate  # On Windows, use `.venv\Scripts\activate`
    ```
 
