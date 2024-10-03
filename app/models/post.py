@@ -1,6 +1,7 @@
 from datetime import UTC, datetime
 from pydantic import BaseModel
 from sqlalchemy import UUID, Column, DateTime, Integer, String, func
+import uuid
 
 from app.models import Base
 
@@ -36,7 +37,7 @@ class PostCreate(PostBase):
 
 
 class PostRead(PostBase):
-    id: int
+    id: uuid.UUID
     created_at: datetime
     updated_at: datetime
 
