@@ -20,9 +20,3 @@ app = FastAPI(title=env.APP_NAME, lifespan=lifespan)
 
 
 app.include_router(blog.router)
-
-
-""" @app.get("/")
-async def root():
-    return {"message": "Home Page!"}
- """
