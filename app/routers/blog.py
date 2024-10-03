@@ -80,3 +80,19 @@ async def update_post(
     db: AsyncSession = Depends(get_db),
 ):
     return await BlogController.update_post(db, id, post)
+
+
+@router.delete(
+    "/{id}",
+    summary="Delete a blog post by ID",
+    description="Delete a blog post by its unique identifier",
+)
+async def delete_post(
+    id: uuid.UUID = Path(
+        ...,
+        description="The ID of the post to delete",
+        example="123e4567-e89b-12d3-a456-426614174000",
+    ),
+    db: AsyncSession = Depends(get_db),
+):
+    return await BlogController.delete_post(db, id)

@@ -97,3 +97,13 @@ class BlogController:
         await db.refresh(existing_post)
 
         return existing_post
+
+    async def delete_post(db: AsyncSession, id: uuid.UUID) -> None:
+        result = await db.execute(select(Post).where(Post.id == id))
+        post = result.scalar()
+
+        if not post:
+            raise HTTPException(status_code=404, detail="Post not found")
+
+        await db.delete(post)
+        await db.commit()
