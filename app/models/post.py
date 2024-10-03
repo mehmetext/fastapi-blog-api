@@ -16,6 +16,7 @@ class Post(Base):
 
     title = Column(String, nullable=False)
     content = Column(String, nullable=False)
+    slug = Column(String, nullable=False, unique=True)
 
     created_at = Column(DateTime, nullable=False, server_default=func.now())
     updated_at = Column(
@@ -44,6 +45,7 @@ class PostUpdate(BaseModel):
 
 class PostRead(PostBase):
     id: uuid.UUID
+    slug: str
     created_at: datetime
     updated_at: datetime
 

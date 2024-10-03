@@ -1,10 +1,10 @@
-from datetime import UTC, datetime
 from enum import Enum
 import uuid
 from fastapi import HTTPException
 from sqlalchemy import select
 from app.models.post import Post, PostCreate, PostRead, PostUpdate
 from sqlalchemy.ext.asyncio import AsyncSession
+from slugify import slugify
 
 
 class OrderBy(str, Enum):
@@ -69,9 +69,12 @@ class BlogController:
 
     async def create_post(db: AsyncSession, post: PostCreate) -> PostRead:
         new_post = Post(**post.model_dump())
+        new_post.slug = slugify(new_post.title)
+
         db.add(new_post)
         await db.commit()
         await db.refresh(new_post)
+
         return new_post
 
     async def update_post(
@@ -87,6 +90,8 @@ class BlogController:
 
         for key, value in post.model_dump(exclude_unset=True).items():
             setattr(existing_post, key, value)
+
+        existing_post.slug = slugify(existing_post.title)
 
         await db.commit()
         await db.refresh(existing_post)
