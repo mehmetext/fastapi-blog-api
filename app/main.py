@@ -18,5 +18,4 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title=env.APP_NAME, lifespan=lifespan)
 
-
 app.include_router(blog.router)
