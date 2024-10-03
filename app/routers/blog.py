@@ -3,6 +3,7 @@ from fastapi import APIRouter, Depends, Path, Query
 from app.controllers.blog import BlogController, OrderBy
 from app.lib.db import get_db
 from app.lib.seed import seed_posts
+from app.lib.utils import random_word
 from app.models.post import PostCreate, PostRead, PostUpdate
 from sqlalchemy.ext.asyncio import AsyncSession
 

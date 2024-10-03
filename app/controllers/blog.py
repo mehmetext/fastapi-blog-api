@@ -2,6 +2,7 @@ from enum import Enum
 import uuid
 from fastapi import HTTPException
 from sqlalchemy import select
+from app.lib.utils import random_word
 from app.models.post import Post, PostCreate, PostRead, PostUpdate
 from sqlalchemy.ext.asyncio import AsyncSession
 from slugify import slugify
@@ -68,8 +69,14 @@ class BlogController:
         return post
 
     async def create_post(db: AsyncSession, post: PostCreate) -> PostRead:
-        new_post = Post(**post.model_dump())
-        new_post.slug = slugify(new_post.title)
+        slug = slugify(post.title)
+
+        existing_post = await db.execute(select(Post).where(Post.slug == slug))
+
+        if existing_post:
+            slug = f"{slug}-{random_word(5)}"
+
+        new_post = Post(**post.model_dump(), slug=slug)
 
         db.add(new_post)
         await db.commit()
@@ -91,7 +98,14 @@ class BlogController:
         for key, value in post.model_dump(exclude_unset=True).items():
             setattr(existing_post, key, value)
 
-        existing_post.slug = slugify(existing_post.title)
+        slug = slugify(existing_post.title)
+
+        existing_slug_check = await db.execute(select(Post).where(Post.slug == slug))
+
+        if existing_slug_check:
+            slug = f"{slug}-{random_word(5)}"
+
+        existing_post.slug = slug
 
         await db.commit()
         await db.refresh(existing_post)
