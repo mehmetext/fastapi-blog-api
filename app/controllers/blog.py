@@ -1,8 +1,9 @@
+from datetime import UTC, datetime
 from enum import Enum
 import uuid
 from fastapi import HTTPException
 from sqlalchemy import select
-from app.models.post import Post, PostCreate, PostRead
+from app.models.post import Post, PostCreate, PostRead, PostUpdate
 from sqlalchemy.ext.asyncio import AsyncSession
 
 
@@ -72,3 +73,22 @@ class BlogController:
         await db.commit()
         await db.refresh(new_post)
         return new_post
+
+    async def update_post(
+        db: AsyncSession,
+        id: uuid.UUID,
+        post: PostUpdate,
+    ) -> PostRead:
+        result = await db.execute(select(Post).where(Post.id == id))
+        existing_post = result.scalar()
+
+        if not existing_post:
+            raise HTTPException(status_code=404, detail="Post not found")
+
+        for key, value in post.model_dump(exclude_unset=True).items():
+            setattr(existing_post, key, value)
+
+        await db.commit()
+        await db.refresh(existing_post)
+
+        return existing_post

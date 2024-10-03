@@ -1,4 +1,4 @@
-from datetime import UTC, datetime
+from datetime import datetime
 from pydantic import BaseModel, Field
 from sqlalchemy import UUID, Column, DateTime, Integer, String, func
 import uuid
@@ -22,18 +22,24 @@ class Post(Base):
         DateTime,
         nullable=False,
         server_default=func.now(),
-        onupdate=datetime.now(UTC),
+        onupdate=func.now(),
     )
 
 
 class PostBase(BaseModel):
     title: str = Field(..., min_length=3, max_length=255)
     content: str = Field(..., min_length=3)
-    author_id: int = Field(..., gt=0)
+    author_id: int = Field(...)
 
 
 class PostCreate(PostBase):
     pass
+
+
+class PostUpdate(BaseModel):
+    title: str | None = Field(None, min_length=3, max_length=255)
+    content: str | None = Field(None, min_length=3)
+    author_id: int | None = Field(None)
 
 
 class PostRead(PostBase):

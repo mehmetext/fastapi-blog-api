@@ -2,7 +2,7 @@ import uuid
 from fastapi import APIRouter, Depends, Path, Query
 from app.controllers.blog import BlogController, OrderBy
 from app.lib.db import get_db
-from app.models.post import PostCreate, PostRead
+from app.models.post import PostCreate, PostRead, PostUpdate
 from sqlalchemy.ext.asyncio import AsyncSession
 
 router = APIRouter(prefix="/blog", tags=["Blog"])
@@ -62,3 +62,21 @@ async def create_post(
     db: AsyncSession = Depends(get_db),
 ):
     return await BlogController.create_post(db, post)
+
+
+@router.put(
+    "/{id}",
+    response_model=PostRead,
+    summary="Update a blog post by ID",
+    description="Update and return a blog post by its unique identifier",
+)
+async def update_post(
+    post: PostUpdate,
+    id: uuid.UUID = Path(
+        ...,
+        description="The ID of the post to update",
+        example="123e4567-e89b-12d3-a456-426614174000",
+    ),
+    db: AsyncSession = Depends(get_db),
+):
+    return await BlogController.update_post(db, id, post)
