@@ -42,15 +42,7 @@ uvicorn[standard]
    uvicorn main:app --reload
    ```
 
-## Usage
-
-To run the FastAPI server:
-
-```
-uvicorn main:app --reload
-```
-
-This will start the server, and you can access the API documentation at `http://127.0.0.1:8000/docs` or `http://localhost:8000/docs`.
+This will start the server, and you can access the API documentation at `http://127.0.0.1:8000/docs` or `http://127.0.0.1:8000/redoc`.
 
 ## Contributing
 
