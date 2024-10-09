@@ -50,6 +50,12 @@ class BlogController:
                 query = query.order_by(Post.content.desc())
             elif order_by == OrderBy.created_at_asc:
                 query = query.order_by(Post.created_at.asc())
+            elif order_by == OrderBy.created_at_desc:
+                query = query.order_by(Post.created_at.desc())
+            elif order_by == OrderBy.updated_at_asc:
+                query = query.order_by(Post.updated_at.asc())
+            elif order_by == OrderBy.updated_at_desc:
+                query = query.order_by(Post.updated_at.desc())
 
         result = await db.execute(query)
 
